@@ -1,18 +1,23 @@
-# Salesforce DX Project: Next Steps
+# Salesforce LWC: Set up local development
 
-Now that you’ve created a Salesforce DX project, what’s next? Here are some documentation resources to get you started.
+The Local Development Server is a Salesforce CLI plug-in that configures and runs a Lightning Web Components-enabled server on your computer. You can develop Lightning web components and see live changes without publishing the components to an org.
 
-## How Do You Plan to Deploy Your Changes?
+To set up LWC Local Development, install the server, enable and authorize a Dev Hub org, and create a scratch org. 
 
-Do you want to deploy a set of changes, or create a self-contained application? Choose a [development model](https://developer.salesforce.com/tools/vscode/en/user-guide/development-models).
+Basic Setup: https://trailhead.salesforce.com/content/learn/projects/quick-start-lightning-web-components
 
-## Configure Your Salesforce DX Project
+## Install the LWC Local Development Server
 
-The `sfdx-project.json` file contains useful configuration information for your project. See [Salesforce DX Project Configuration](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_ws_config.htm) in the _Salesforce DX Developer Guide_ for details about this file.
+Run this command from a command-line interface.
 
-## Read All About It
+***sfdx plugins:install @salesforce/lwc-dev-server***
 
-- [Salesforce Extensions Documentation](https://developer.salesforce.com/tools/vscode/)
-- [Salesforce CLI Setup Guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_setup.meta/sfdx_setup/sfdx_setup_intro.htm)
-- [Salesforce DX Developer Guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_intro.htm)
-- [Salesforce CLI Command Reference](https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_reference.meta/sfdx_cli_reference/cli_reference.htm)
+## Run Local Development Salesforce CLI Commands in VS Code
+
+SFDX: Start LWC Local Development Server
+
+SFDX: Open Local Development Home
+
+or SFDX: Preview Component Locally
+
+SFDX: Stop LWC Local Development Server
