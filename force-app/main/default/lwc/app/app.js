@@ -1,23 +1,32 @@
-import { LightningElement, track } from 'lwc';
+import { LightningElement } from "lwc";
 
-// const URL = "https://services9.arcgis.com/N9p5hsImWXAccRNI/arcgis/rest/services/Z7biAeD8PAkqgmWhxG2A/FeatureServer/1/query?f=json&where=Confirmed%20%3E%200&outFields=Country_Region,Confirmed,Deaths,Recovered,Last_Update,Active&orderByFields=Confirmed%20desc"
+// const URL = ""
 
 export default class App extends LightningElement {
-    obj = {
+  obj = {
     total1: 343,
     total2: 454,
     total3: 765,
-    total4: 234
+    total4: 234,
+    total5: 634,
+    total6: 534
+  };
+  connectedCallback() {
+    this.fetchData();
+  }
 
-}
-    connectedCallback(){
-        this.fetchData()
-    }
+  async fetchData() {
+    // let response = await fetch(URL)
+    //let data = await response.json()
+  }
 
-    async fetchData(){
-       // let response = await fetch(URL)
-        //let data = await response.json()
-       // this.obj.total += 6
-        
+  isListShown = true;
+
+  showList(event) {
+    if (event.target.dataset.name === "LIST") {
+      this.isListShown = true;
+    } else {
+      this.isListShown = false;
     }
+  }
 }
