@@ -23,10 +23,10 @@ export default class App extends LightningElement {
   isListShown = true;
 
   showList(event) {
-    if (event.target.dataset.name === "LIST") {
-      this.isListShown = true;
-    } else {
+    if (event.target.dataset.name !== "LIST") {
       this.isListShown = false;
+    } else {
+      this.isListShown = true;
     }
   }
 }
