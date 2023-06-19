@@ -1,8 +1,8 @@
 # Salesforce LWC: Set up local development
 
-The Local Development Server is a Salesforce CLI plug-in that configures and runs a Lightning Web Components-enabled server on your computer. You can develop Lightning web components and see live changes without publishing the components to an org.
-
 To set up LWC Local Development, install the server, enable and authorize a Dev Hub org, and create a scratch org. 
+
+The Local Development Server is a Salesforce CLI plug-in that configures and runs a Lightning Web Components-enabled server on your computer. You can develop Lightning web components and see live changes without publishing the components to an org.
 
 Basic Setup: https://trailhead.salesforce.com/content/learn/projects/quick-start-lightning-web-components
 
