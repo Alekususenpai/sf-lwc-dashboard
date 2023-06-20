@@ -77,14 +77,116 @@
         <div class="box-container">
           <h1>Data by country</h1>
           <div class="toggle-container">
-            <div data-name="LIST" onclick={showList}>List</div>
-            <div data-name="CHART" onclick={showList}>Chart</div>
+            <div data-name="LIST" onclick={showList} class={isListSelected}>
+              List
+            </div>
+            <div data-name="CHART" onclick={showList} class={isChartSelected}>
+              Chart
+            </div>
           </div>
         </div>
       </div>
     </div>
 
-    <template if:true={isListShown}>I am the list!</template>
-    <template if:false={isListShown}>I am the chart!</template>
+    <template if:true={isListShown}
+      ><div
+        class="slds-m-left_medium slds-m-right_medium slds-m-left_medium slds-m-bottom_medium"
+      >
+        <div class="slds-p-around_medium lgc-bg">
+          <label class="label-text">Enter Your country Name</label>
+
+          <lightning-input
+            type="text"
+            autocomplete="off"
+            label="Enter Your country Name"
+            variant="label-hidden"
+            onkeyup={searchHandler}
+          ></lightning-input>
+          <span
+            class="slds-badge slds-m-around_medium fatalityColumnClass-danger"
+            >Higher than Average Fatality</span
+          >
+          <span
+            class="slds-badge slds-m-around_medium recoveryColumnClass-success"
+            >Higher than Average Recovery</span
+          >
+          <span
+            class="slds-badge slds-m-around_medium recoveryColumnClass-warning"
+            >Lower than Average Recovery</span
+          >
+          <span
+            class="slds-badge slds-m-around_x-medium fatalityColumnClass-success"
+            >Lower than Average Fatality</span
+          >
+          <span class="slds-badge slds-m-around_x-medium activeColumnClass"
+            >More Active than Recovered</span
+          >
+          <span class="slds-badge slds-m-around_x-medium recoveredColumnClass"
+            >More Recovered than Active</span
+          >
+        </div>
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Country Name</th>
+              <th>Confirmed</th>
+              <th>Active</th>
+              <th>Recovered</th>
+              <th>Deaths</th>
+              <th>Fatality Rate</th>
+              <th>Recovery Rate</th>
+              <th>Last Updated</th>
+            </tr>
+          </thead>
+
+          <tbody id="myTable">
+            <template for:each={filteredtableData} for:item="item">
+              <tr key={item.Country_Region}>
+                <td class="countryName">{item.Country_Region}</td>
+                <td>{item.Confirmed}</td>
+                <td class={item.activeColumnClass}>{item.Active}</td>
+                <td class={item.recoveredColumnClass}>{item.Recovered}</td>
+                <td>{item.Deaths}</td>
+                <td class={item.fatalityColumnClass}>{item.Fatality_rate}</td>
+                <td class={item.recoveryColumnClass}>{item.Recovery_Rate}</td>
+                <td>{item.formatedDate}</td>
+              </tr>
+            </template>
+
+            <template if:false={data}>
+              <div>No Data Found</div>
+            </template>
+          </tbody>
+        </table>
+      </div></template
+    >
+    <template if:false={isListShown}>
+      <div
+        class="slds-m-left_medium slds-m-right_medium slds-m-left_medium slds-m-bottom_medium"
+      >
+        <div class="slds-p-around_medium lgc-bg">
+          <label class="label-text">Select Your country</label>
+          <lightning-combobox
+            name="country"
+            label="country"
+            value={countrySelected}
+            placeholder="Select Your country"
+            options={countryList}
+            variant="label-hidden"
+            onchange={handleCountryChange}
+          ></lightning-combobox>
+        </div>
+      </div>
+      <div class="chartContainer" lwc:dom="manual"></div
+    ></template>
+
+    <footer>
+      <span
+        >Build by
+        <a href="https://www.linkedin.com/in/alekusu" target="_blank">
+          Alekususenpai</a
+        ></span
+      >
+    </footer>
   </div>
 </template>

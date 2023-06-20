@@ -1,4 +1,4 @@
-import { LightningElement } from "lwc";
+import { LightningElement, track } from "lwc";
 
 // const URL = ""
 
@@ -20,6 +20,19 @@ export default class App extends LightningElement {
     //let data = await response.json()
   }
 
+  @track data = false;
+
+  // Getters
+
+  get isListSelected() {
+    return this.isListShown ? "active" : "";
+  }
+
+  get isChartSelected() {
+    return !this.isListShown ? "active" : "";
+  }
+
+  // Variable to keep track of the default view
   isListShown = true;
 
   showList(event) {
