@@ -1,81 +1,33 @@
 <template>
   <div class="app-container">
     <!--Header-->
-    <header>_name__ Dashboard</header>
+    <header>Currency Fluctuation Dashboard</header>
 
     <!--Dashboard Cards-->
     <div
-      class="slds-m-top_large slds-p-left_small slds-p-right_small slds-grid slds-gutters slds-wrap space"
+      class="slds-m-top_large slds-m-bottom_large slds-p-left_small slds-p-right_small slds-grid slds-gutters slds-wrap space"
     >
-      <div class="slds-col bg-primary slds-p-around_small slds-m-around_small">
-        <div
-          class="slds-text-align_center slds-text-heading_medium white-color"
-        >
-          Total Confirmed
+      <template for:each={dropdownOptions} for:item="item">
+        <div key={item.value} class={item.bg}>
+          <div
+            class="slds-text-align_center slds-text-heading_medium white-color"
+          >
+            {item.label}
+          </div>
+          <div
+            class="slds-text-align_center slds-text-heading_small white-color"
+          >
+            {item.value}
+          </div>
         </div>
-        <div class="slds-text-align_center slds-text-heading_large white-color">
-          {obj.total1}
-        </div>
-      </div>
-      <div class="slds-col bg-warning slds-p-around_small slds-m-around_small">
-        <div
-          class="slds-text-align_center slds-text-heading_medium white-color"
-        >
-          Total Active
-        </div>
-        <div class="slds-text-align_center slds-text-heading_large white-color">
-          {obj.total2}
-        </div>
-      </div>
-      <div class="slds-col bg-success slds-p-around_small slds-m-around_small">
-        <div
-          class="slds-text-align_center slds-text-heading_medium white-color"
-        >
-          Total Recovered
-        </div>
-        <div class="slds-text-align_center slds-text-heading_large white-color">
-          {obj.total3}
-        </div>
-      </div>
-      <div class="slds-col bg-danger slds-p-around_small slds-m-around_small">
-        <div
-          class="slds-text-align_center slds-text-heading_medium white-color"
-        >
-          Total Deaths
-        </div>
-        <div class="slds-text-align_center slds-text-heading_large white-color">
-          {obj.total4}
-        </div>
-      </div>
-      <div class="slds-col bg-info slds-p-around_small slds-m-around_small">
-        <div
-          class="slds-text-align_center slds-text-heading_medium white-color"
-        >
-          Fatality Rate
-        </div>
-        <div class="slds-text-align_center slds-text-heading_large white-color">
-          {obj.total5}
-        </div>
-      </div>
-      <div
-        class="slds-col bg-secondary slds-p-around_small slds-m-around_small"
-      >
-        <div
-          class="slds-text-align_center slds-text-heading_medium white-color"
-        >
-          Recovery Rate
-        </div>
-        <div class="slds-text-align_center slds-text-heading_large white-color">
-          {obj.total6}
-        </div>
-      </div>
+      </template>
     </div>
 
     <!--Heading and toggle view-->
     <div class="slds-m-left_medium slds-m-right_medium">
       <div class="slds-p-around_medium lgc-bg">
         <div class="box-container">
-          <h1>Data by country</h1>
+          <h1>Data by currency</h1>
           <div class="toggle-container">
             <div data-name="LIST" onclick={showList} class={isListSelected}>
               List
@@ -88,80 +40,64 @@
       </div>
     </div>
 
+    <!--LIST-->
     <template if:true={isListShown}
       ><div
         class="slds-m-left_medium slds-m-right_medium slds-m-left_medium slds-m-bottom_medium"
       >
         <div class="slds-p-around_medium lgc-bg">
-          <label class="label-text">Enter Your country Name</label>
+          <label class="label-text">Choose a currency</label>
 
-          <lightning-input
-            type="text"
-            autocomplete="off"
-            label="Enter Your country Name"
-            variant="label-hidden"
-            onkeyup={searchHandler}
-          ></lightning-input>
+          <lightning-combobox
+            name="dropdown"
+            value={selectedOption}
+            options={dropdownOptions}
+            onchange={handleDropdownChange}
+          ></lightning-combobox>
           <span
             class="slds-badge slds-m-around_medium fatalityColumnClass-danger"
-            >Higher than Average Fatality</span
+            >Currency dropping</span
           >
           <span
             class="slds-badge slds-m-around_medium recoveryColumnClass-success"
-            >Higher than Average Recovery</span
-          >
-          <span
-            class="slds-badge slds-m-around_medium recoveryColumnClass-warning"
-            >Lower than Average Recovery</span
-          >
+            >Getting stronger
+          </span>
           <span
             class="slds-badge slds-m-around_x-medium fatalityColumnClass-success"
-            >Lower than Average Fatality</span
-          >
-          <span class="slds-badge slds-m-around_x-medium activeColumnClass"
-            >More Active than Recovered</span
-          >
-          <span class="slds-badge slds-m-around_x-medium recoveredColumnClass"
-            >More Recovered than Active</span
+            >Stable</span
           >
         </div>
         <table class="table table-bordered">
           <thead>
             <tr>
-              <th>Country Name</th>
-              <th>Confirmed</th>
-              <th>Active</th>
-              <th>Recovered</th>
-              <th>Deaths</th>
-              <th>Fatality Rate</th>
-              <th>Recovery Rate</th>
-              <th>Last Updated</th>
+              <th>Currency Name</th>
+              <th>Current value</th>
+              <th>2 year ago</th>
+              <th>1 year ago</th>
+              <th>6 months ago</th>
+              <th>3 months ago</th>
             </tr>
           </thead>
 
           <tbody id="myTable">
-            <template for:each={filteredtableData} for:item="item">
-              <tr key={item.Country_Region}>
-                <td class="countryName">{item.Country_Region}</td>
-                <td>{item.Confirmed}</td>
-                <td class={item.activeColumnClass}>{item.Active}</td>
-                <td class={item.recoveredColumnClass}>{item.Recovered}</td>
-                <td>{item.Deaths}</td>
-                <td class={item.fatalityColumnClass}>{item.Fatality_rate}</td>
-                <td class={item.recoveryColumnClass}>{item.Recovery_Rate}</td>
-                <td>{item.formatedDate}</td>
+            <template for:each={currencies} for:item="item">
+              <tr key={item.value}>
+                <td class="countryName">{item.currency}</td>
+                <td>{item.value}</td>
               </tr>
             </template>
 
-            <template if:false={data}>
+            <template if:false={currencies}>
               <div>No Data Found</div>
             </template>
           </tbody>
         </table>
       </div></template
     >
+    <!--CHART-->
     <template if:false={isListShown}>
-      <div
+      CHART
+      <!-- <div
         class="slds-m-left_medium slds-m-right_medium slds-m-left_medium slds-m-bottom_medium"
       >
         <div class="slds-p-around_medium lgc-bg">
@@ -177,8 +113,8 @@
           ></lightning-combobox>
         </div>
       </div>
-      <div class="chartContainer" lwc:dom="manual"></div
-    ></template>
+      <div class="chartContainer" lwc:dom="manual"></div> --></template
+    >
 
     <footer>
       <span
