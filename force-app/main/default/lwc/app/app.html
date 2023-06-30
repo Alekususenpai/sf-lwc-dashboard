@@ -72,7 +72,6 @@
             <tr>
               <th>Currency Name</th>
               <th>Current value</th>
-              <th>2 year ago</th>
               <th>1 year ago</th>
               <th>6 months ago</th>
               <th>3 months ago</th>
@@ -81,9 +80,11 @@
 
           <tbody id="myTable">
             <template for:each={currencies} for:item="item">
-              <tr key={item.value}>
-                <td class="countryName">{item.currency}</td>
-                <td>{item.value}</td>
+              <tr key={item.name}>
+                <td class="countryName">{item.name}</td>
+                <template for:each={item.value} for:item="value">
+                  <td key={value.value}>{value.value}</td>
+                </template>
               </tr>
             </template>
 

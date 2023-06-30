@@ -5,6 +5,7 @@ import { loadStyle, loadScript } from "lightning/platformResourceLoader";
 
 export default class App extends LightningElement {
   @track currencies;
+  @track dates;
   selectedOption = "eur";
   currencyStyle = " slds-col slds-p-around_small slds-m-around_small";
   dropdownOptions = [
@@ -36,6 +37,7 @@ export default class App extends LightningElement {
 
   connectedCallback() {
     this.fetchData();
+    this.fetchDates();
   }
 
   renderedCallback() {
@@ -61,33 +63,70 @@ export default class App extends LightningElement {
     //   });
   }
 
+  fetchDates() {
+    const currentDate = new Date();
+
+    function dataGenerator(date) {
+      const currentYear = date.getFullYear();
+      const currentMonth = String(date.getMonth() + 1).padStart(2, "0");
+      const currentDay = String(date.getDate()).padStart(2, "0");
+      return `${currentYear}-${currentMonth}-${currentDay}`;
+    }
+
+    const oneYearAgo = new Date(currentDate);
+    oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+    const sixMonthsAgo = new Date(currentDate);
+    sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+    const threeMonthsAgo = new Date(currentDate);
+    threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+
+    const one = dataGenerator(oneYearAgo);
+    const six = dataGenerator(sixMonthsAgo);
+    const three = dataGenerator(threeMonthsAgo);
+
+    const dates = {
+      oneYearAgo: one,
+      sixMonthsAgo: six,
+      threeMonthsAgo: three
+    };
+
+    this.dates = dates;
+  }
+
   async fetchData() {
     try {
       const selectedOption = this.selectedOption;
+      const dates = this.dates;
       const apiUrl = `https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/${selectedOption}.json`;
-      
-      const currentDate = new Date();
-      const year = currentDate.getFullYear();
-      const month = currentDate.getMonth() + 1
-      //const datesUrl = `https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/${}/currencies/${selectedOption}.json`
-      console.log(month)
 
-      
-      const response = await fetch(apiUrl);
-      const fetchedData = await response.json();
-      
-      const data = fetchedData[selectedOption];
+      const oneYearUrl = `https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/${dates.oneYearAgo}/currencies/${selectedOption}.json`;
+      const sixMonthsUrl = `https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/${dates.sixMonthsAgo}/currencies/${selectedOption}.json`;
+      const threeMonthsUrl = `https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/${dates.threeMonthsAgo}/currencies/${selectedOption}.json`;
+
+      const urls = [apiUrl, oneYearUrl, sixMonthsUrl, threeMonthsUrl];
+
+      const responses = await Promise.all(urls.map((url) => fetch(url)));
+      const jsonResponses = await Promise.all(
+        responses.map((response) => response.json())
+      );
+
+      const data = jsonResponses.map((item) => {
+        return { keys: item.date, item: item[selectedOption] };
+      });
+
       const currencies = this.dropdownOptions.reduce((result, obj) => {
-          if (obj.value !== selectedOption) {
-              result.push({
-                  selected: obj.value,
-                  currency: obj.label,
-                  value: data[obj.value]
-                });
-            }
-            return result;
+        if (obj.value !== selectedOption) {
+          result.push({
+            currency: obj.value,
+            name: obj.label,
+            value: data.map((el) => {
+              return {currency: obj.value, date: el.keys, value: el.item[obj.value] };
+            })
+          });
+        }
+        return result;
       }, []);
-      //this.currencies = currencies;
+      this.currencies = currencies;
     } catch (error) {
       throw new Error("No data found");
     }
