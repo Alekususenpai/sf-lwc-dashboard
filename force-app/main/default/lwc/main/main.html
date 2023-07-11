@@ -1,0 +1,137 @@
+<template>
+  <div class="app-container">
+    <!--Header-->
+    <header>Currency Fluctuation Dashboard</header>
+
+    <!--Dashboard Cards-->
+    <div
+      class="slds-m-top_large slds-m-bottom_large slds-p-left_small slds-p-right_small slds-grid slds-gutters slds-wrap space"
+    >
+      <template for:each={dropdownOptions} for:item="item">
+        <div key={item.value} class={item.bg}>
+          <div
+            class="slds-text-align_center slds-text-heading_medium white-color"
+          >
+            {item.label}
+          </div>
+          <div
+            class="slds-text-align_center slds-text-heading_small white-color"
+          >
+            {item.value}
+          </div>
+        </div>
+      </template>
+    </div>
+
+    <!--Heading and toggle view-->
+    <div class="slds-m-left_medium slds-m-right_medium">
+      <div class="slds-p-around_medium lgc-bg">
+        <div class="box-container">
+          <h1>Data by currency</h1>
+          <div class="toggle-container">
+            <div data-name="LIST" onclick={showList} class={isListSelected}>
+              List
+            </div>
+            <div data-name="CHART" onclick={showList} class={isChartSelected}>
+              Chart
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!--LIST-->
+    <template if:true={isListShown}
+      ><div
+        class="slds-m-left_medium slds-m-right_medium slds-m-left_medium slds-m-bottom_medium"
+      >
+        <div class="slds-p-around_medium lgc-bg">
+          <div class="input-container">
+            <lightning-input
+              name="input"
+              type="text"
+              label=" "
+              onchange={handleInputChange}
+              value={selectedAmount}
+            ></lightning-input>
+            <lightning-combobox
+              name="dropdown"
+              value={selectedOption}
+              options={dropdownOptions}
+              onchange={handleDropdownChange}
+            ></lightning-combobox>
+          </div>
+
+          <span
+            class="slds-badge slds-m-around_medium fatalityColumnClass-danger"
+            >Currency dropping</span
+          >
+          <span
+            class="slds-badge slds-m-around_medium recoveryColumnClass-success"
+            >Getting stronger
+          </span>
+          <span
+            class="slds-badge slds-m-around_x-medium fatalityColumnClass-success"
+            >Stable</span
+          >
+        </div>
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Currency Name</th>
+              <th>Current value</th>
+              <th>1 year ago</th>
+              <th>6 months ago</th>
+              <th>3 months ago</th>
+            </tr>
+          </thead>
+
+          <tbody id="myTable">
+            <template for:each={currencies} for:item="item">
+              <tr key={item.name}>
+                <td class="countryName">{item.name}</td>
+                <template for:each={item.value} for:item="value">
+                  <td key={value.value}>{value.value}</td>
+                </template>
+              </tr>
+            </template>
+
+            <template if:false={currencies}>
+              <div>No Data Found</div>
+            </template>
+          </tbody>
+        </table>
+      </div></template
+    >
+    <!--CHART-->
+    <template if:false={isListShown}>
+      CHART
+      <!-- <div
+        class="slds-m-left_medium slds-m-right_medium slds-m-left_medium slds-m-bottom_medium"
+      >
+        <div class="slds-p-around_medium lgc-bg">
+          <label class="label-text">Select Your country</label>
+          <lightning-combobox
+            name="country"
+            label="country"
+            value={countrySelected}
+            placeholder="Select Your country"
+            options={countryList}
+            variant="label-hidden"
+            onchange={handleCountryChange}
+          ></lightning-combobox>
+        </div>
+      </div>
+      <div class="chartContainer" lwc:dom="manual"></div> --></template
+    >
+
+    <footer>
+      <span
+        >Build by
+        <a href="https://www.linkedin.com/in/alekusu" target="_blank">
+          Alekususenpai</a
+        ></span
+      >
+    </footer>
+  </div>
+</template>
