@@ -9,76 +9,83 @@ export default class Main extends LightningElement {
   selectedOption = "eur";
   selectedAmount = 1;
   currencyStyle = " slds-col slds-p-around_small slds-m-around_small";
+
   dropdownOptions = [
     {
+      idx: 1,
       label: "Euro",
       value: "eur",
       bg: "bg-primary" + this.currencyStyle
     },
     {
+      idx: 2,
       label: "Macedonian denar",
       value: "mkd",
       bg: "bg-success" + this.currencyStyle
     },
     {
+      idx: 3,
       label: "Colombian peso",
       value: "cop",
       bg: "bg-secondary" + this.currencyStyle
     },
     {
+      idx: 4,
       label: "United States dollar",
       value: "usd",
       bg: "bg-warning" + this.currencyStyle
     },
     {
+      idx: 5,
       label: "Japanese yen",
       value: "jpy",
       bg: "bg-info" + this.currencyStyle
     },
     {
+      idx: 6,
       label: "Pound sterling",
       value: "gbp",
       bg: "bg-danger" + this.currencyStyle
     },
     {
+      idx: 7,
       label: "Australian dollar",
       value: "aud",
       bg: "bg-light" + this.currencyStyle
     },
     {
+      idx: 8,
       label: "Canadian dollar",
       value: "cad",
       bg: "bg-warning" + this.currencyStyle
     },
     {
+      idx: 9,
       label: "Australian dollar",
       value: "aud",
       bg: "bg-primary" + this.currencyStyle
     },
     {
+      idx: 10,
       label: "Swiss franc",
       value: "chf",
       bg: "bg-secondary" + this.currencyStyle
     },
     {
+      idx: 11,
       label: "Bitcoin",
       value: "btc",
       bg: "bg-success" + this.currencyStyle
     },
     {
+      idx: 12,
       label: "Etherium classic",
       value: "etc",
       bg: "bg-primary" + this.currencyStyle
     }
   ];
 
-  handleDropdownChange(event) {
-    this.selectedOption = event.target.value;
-  }
-  handleInputChange(event) {
-    this.selectedAmount = event.target.value;
-  }
-
+  // lifecycle methods
   connectedCallback() {
     this.fetchData();
     this.fetchDates();
@@ -86,7 +93,6 @@ export default class Main extends LightningElement {
 
   renderedCallback() {
     this.fetchData();
-
     // if (this.chartInitialized) {
     //   return;
     // }
@@ -107,6 +113,39 @@ export default class Main extends LightningElement {
     //   });
   }
 
+  // Getters
+  get isListSelected() {
+    return this.isListShown ? "active" : "";
+  }
+
+  get isChartSelected() {
+    return !this.isListShown ? "active" : "";
+  }
+
+  // Variable to keep track of the default view
+  isListShown = true;
+
+  showList(event) {
+    if (event.target.dataset.name !== "LIST") {
+      this.isListShown = false;
+    } else {
+      this.isListShown = true;
+    }
+  }
+
+  // Handlers
+  handleDropdownChange(event) {
+    this.selectedOption = event.target.value;
+  }
+  handleInputChange(event) {
+    if (isNaN(event.target.value)) {
+      this.selectedAmount = 1;
+    } else {
+      this.selectedAmount = event.target.value;
+    }
+  }
+
+  // functions
   fetchDates() {
     const currentDate = new Date();
 
@@ -158,16 +197,21 @@ export default class Main extends LightningElement {
         return { keys: item.date, item: item[selectedOption] };
       });
 
-      const currencies = this.dropdownOptions.reduce((result, obj) => {
+      const currencies = this.dropdownOptions.reduce((result, obj, index) => {
         if (obj.value !== selectedOption) {
           result.push({
+            index: index,
             currency: obj.value,
             name: obj.label,
-            value: data.map((el) => {
+            value: data.map((el, indx) => {
+              const updatedValue = (
+                el.item[obj.value] * this.selectedAmount
+              ).toFixed(2);
               return {
+                index: indx,
                 currency: obj.value,
                 date: el.keys,
-                value: el.item[obj.value].toFixed(2) * this.selectedAmount
+                value: updatedValue
               };
             })
           });
@@ -177,27 +221,6 @@ export default class Main extends LightningElement {
       this.currencies = currencies;
     } catch (error) {
       throw new Error("No data found");
-    }
-  }
-
-  // Getters
-
-  get isListSelected() {
-    return this.isListShown ? "active" : "";
-  }
-
-  get isChartSelected() {
-    return !this.isListShown ? "active" : "";
-  }
-
-  // Variable to keep track of the default view
-  isListShown = true;
-
-  showList(event) {
-    if (event.target.dataset.name !== "LIST") {
-      this.isListShown = false;
-    } else {
-      this.isListShown = true;
     }
   }
 
