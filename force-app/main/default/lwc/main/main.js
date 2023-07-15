@@ -122,7 +122,7 @@ export default class Main extends LightningElement {
     return !this.isListShown ? "active" : "";
   }
 
-  // Variable to keep track of the default view
+  // Function checkers
   isListShown = true;
 
   showList(event) {
@@ -186,7 +186,7 @@ export default class Main extends LightningElement {
       const sixMonthsUrl = `https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/${dates.sixMonthsAgo}/currencies/${selectedOption}.json`;
       const threeMonthsUrl = `https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/${dates.threeMonthsAgo}/currencies/${selectedOption}.json`;
 
-      const urls = [apiUrl, oneYearUrl, sixMonthsUrl, threeMonthsUrl];
+      const urls = [oneYearUrl, sixMonthsUrl, threeMonthsUrl, apiUrl];
 
       const responses = await Promise.all(urls.map((url) => fetch(url)));
       const jsonResponses = await Promise.all(
@@ -197,6 +197,16 @@ export default class Main extends LightningElement {
         return { keys: item.date, item: item[selectedOption] };
       });
 
+      const testfunc = function (dataset, index, obj) {
+        if (
+          dataset[index].item[obj.value] - dataset[index + 1].item[obj.value] >
+          0.05
+        ) {
+          return "bg-danger";
+        }
+        return "bg-success";
+      };
+      
       const currencies = this.dropdownOptions.reduce((result, obj, index) => {
         if (obj.value !== selectedOption) {
           result.push({
@@ -204,20 +214,26 @@ export default class Main extends LightningElement {
             currency: obj.value,
             name: obj.label,
             value: data.map((el, indx) => {
+              const trendColor = testfunc(data, index, obj);
               const updatedValue = (
                 el.item[obj.value] * this.selectedAmount
-              ).toFixed(2);
+              ).toFixed(4);
+
+
               return {
                 index: indx,
                 currency: obj.value,
                 date: el.keys,
-                value: updatedValue
+                value: updatedValue,
+                trendColor: trendColor
               };
             })
           });
         }
         return result;
       }, []);
+
+      //console.log(currencies);
       this.currencies = currencies;
     } catch (error) {
       throw new Error("No data found");
